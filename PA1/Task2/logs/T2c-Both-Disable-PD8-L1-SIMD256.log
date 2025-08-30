@@ -1,0 +1,736 @@
+
+=== Configuration ===
+Embedding Table Size: 100000
+Embedding Dimension: 64
+
+Time WITHOUT software prefetching: 162 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 95 microseconds.Speedup (with software prefetching and simd) = 1.70526x
+
+ Performance counter stats for './emb both':
+
+     2,107,920,233      instructions                     #    3.39  insn per cycle              (45.52%)
+       621,972,792      cycles                                                                  (54.93%)
+           890,718      cache-misses                                                            (63.95%)
+           112,217      cpu_core/L1-dcache-load-misses/                                         (63.94%)
+           151,633      cpu_core/l2_rqsts.all_demand_miss/                                        (63.93%)
+            16,362      cpu_core/LLC-load-misses/                                               (63.93%)
+               178      cpu_core/l2_rqsts.swpf_hit/                                             (63.93%)
+                 5      cpu_core/l2_rqsts.swpf_miss/                                            (36.06%)
+               576      cpu_core/sw_prefetch_access.t0/                                         (36.07%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.07%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.07%)
+
+       0.140577772 seconds time elapsed
+
+       0.139392000 seconds user
+       0.005014000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 1000000
+Embedding Dimension: 8
+
+Time WITHOUT software prefetching: 77 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 31 microseconds.Speedup (with software prefetching and simd) = 2.48387x
+
+ Performance counter stats for './emb both':
+
+     2,700,374,163      instructions                     #    3.46  insn per cycle              (44.76%)
+       781,213,783      cycles                                                                  (54.18%)
+         1,016,157      cache-misses                                                            (63.61%)
+            90,607      cpu_core/L1-dcache-load-misses/                                         (64.19%)
+           192,785      cpu_core/l2_rqsts.all_demand_miss/                                        (64.50%)
+            22,885      cpu_core/LLC-load-misses/                                               (64.50%)
+               111      cpu_core/l2_rqsts.swpf_hit/                                             (64.50%)
+                 2      cpu_core/l2_rqsts.swpf_miss/                                            (35.81%)
+               721      cpu_core/sw_prefetch_access.t0/                                         (35.50%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (35.50%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (35.50%)
+
+       0.176617857 seconds time elapsed
+
+       0.172474000 seconds user
+       0.008022000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 2000000
+Embedding Dimension: 128
+
+Time WITHOUT software prefetching: 351 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 191 microseconds.Speedup (with software prefetching and simd) = 1.8377x
+
+ Performance counter stats for './emb both':
+
+    84,770,225,450      instructions                     #    3.45  insn per cycle              (45.46%)
+    24,598,277,998      cycles                                                                  (54.55%)
+        33,038,321      cache-misses                                                            (63.64%)
+         1,914,117      cpu_core/L1-dcache-load-misses/                                         (63.64%)
+         3,946,792      cpu_core/l2_rqsts.all_demand_miss/                                        (63.64%)
+           201,192      cpu_core/LLC-load-misses/                                               (63.64%)
+             5,829      cpu_core/l2_rqsts.swpf_hit/                                             (63.64%)
+               184      cpu_core/l2_rqsts.swpf_miss/                                            (36.36%)
+            22,583      cpu_core/sw_prefetch_access.t0/                                         (36.36%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.36%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.36%)
+
+       5.639563671 seconds time elapsed
+
+       5.410407000 seconds user
+       0.233017000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 16
+
+Time WITHOUT software prefetching: 160 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 36 microseconds.Speedup (with software prefetching and simd) = 4.44444x
+
+ Performance counter stats for './emb both':
+
+    26,481,025,799      instructions                     #    3.44  insn per cycle              (45.45%)
+     7,700,528,472      cycles                                                                  (54.54%)
+        10,324,802      cache-misses                                                            (63.63%)
+           532,220      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+         1,250,374      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+            60,594      cpu_core/LLC-load-misses/                                               (63.63%)
+             1,265      cpu_core/l2_rqsts.swpf_hit/                                             (63.63%)
+                49      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+             7,082      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.37%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.37%)
+
+       1.767006651 seconds time elapsed
+
+       1.702846000 seconds user
+       0.068033000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 2000000
+Embedding Dimension: 256
+
+Time WITHOUT software prefetching: 490 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 247 microseconds.Speedup (with software prefetching and simd) = 1.98381x
+
+ Performance counter stats for './emb both':
+
+   169,608,785,061      instructions                     #    3.48  insn per cycle              (45.43%)
+    48,702,098,417      cycles                                                                  (54.53%)
+        65,942,805      cache-misses                                                            (63.62%)
+         3,735,577      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+         7,737,887      cpu_core/l2_rqsts.all_demand_miss/                                        (63.64%)
+           346,003      cpu_core/LLC-load-misses/                                               (63.65%)
+            10,768      cpu_core/l2_rqsts.swpf_hit/                                             (63.66%)
+             1,985      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+            44,645      cpu_core/sw_prefetch_access.t0/                                         (36.36%)
+             1,546      cpu_core/sw_prefetch_access.t1_t2/                                        (36.35%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.34%)
+
+      11.156630968 seconds time elapsed
+
+      10.674481000 seconds user
+       0.485976000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 1000000
+Embedding Dimension: 512
+
+Time WITHOUT software prefetching: 703 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 354 microseconds.Speedup (with software prefetching and simd) = 1.98588x
+
+ Performance counter stats for './emb both':
+
+   169,513,576,503      instructions                     #    3.48  insn per cycle              (45.45%)
+    48,716,337,816      cycles                                                                  (54.54%)
+        66,135,896      cache-misses                                                            (63.63%)
+         3,588,211      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+         7,795,334      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+           416,187      cpu_core/LLC-load-misses/                                               (63.63%)
+             8,494      cpu_core/l2_rqsts.swpf_hit/                                             (63.64%)
+               569      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+            44,667      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.37%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.36%)
+
+      11.160525094 seconds time elapsed
+
+      10.691347000 seconds user
+       0.473015000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 30000
+Embedding Dimension: 16
+
+Time WITHOUT software prefetching: 45 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 39 microseconds.Speedup (with software prefetching and simd) = 1.15385x
+
+ Performance counter stats for './emb both':
+
+       164,216,091      instructions                     #    3.16  insn per cycle              (44.93%)
+        51,990,601      cycles                                                                  (60.42%)
+            91,896      cache-misses                                                            (68.35%)
+            52,182      cpu_core/L1-dcache-load-misses/                                         (68.35%)
+            51,508      cpu_core/l2_rqsts.all_demand_miss/                                        (68.25%)
+             5,944      cpu_core/LLC-load-misses/                                               (68.25%)
+                48      cpu_core/l2_rqsts.swpf_hit/                                             (68.25%)
+                 0      cpu_core/l2_rqsts.swpf_miss/                                            (31.65%)
+                50      cpu_core/sw_prefetch_access.t0/                                         (31.75%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (31.75%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (31.75%)
+
+       0.008958702 seconds time elapsed
+
+       0.011757000 seconds user
+       0.001068000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 50000
+Embedding Dimension: 64
+
+Time WITHOUT software prefetching: 120 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 85 microseconds.Speedup (with software prefetching and simd) = 1.41176x
+
+ Performance counter stats for './emb both':
+
+     1,102,124,244      instructions                     #    3.41  insn per cycle              (45.03%)
+       323,299,503      cycles                                                                  (54.20%)
+           369,111      cache-misses                                                            (63.36%)
+            83,934      cpu_core/L1-dcache-load-misses/                                         (63.37%)
+            96,599      cpu_core/l2_rqsts.all_demand_miss/                                        (63.35%)
+            11,664      cpu_core/LLC-load-misses/                                               (63.35%)
+                64      cpu_core/l2_rqsts.swpf_hit/                                             (63.59%)
+                 5      cpu_core/l2_rqsts.swpf_miss/                                            (36.63%)
+               305      cpu_core/sw_prefetch_access.t0/                                         (36.65%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.65%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.41%)
+
+       0.072814546 seconds time elapsed
+
+       0.074576000 seconds user
+       0.002015000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 30000
+Embedding Dimension: 512
+
+Time WITHOUT software prefetching: 637 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 337 microseconds.Speedup (with software prefetching and simd) = 1.89021x
+
+ Performance counter stats for './emb both':
+
+     5,142,374,086      instructions                     #    3.50  insn per cycle              (45.08%)
+     1,471,303,058      cycles                                                                  (54.23%)
+         2,055,619      cache-misses                                                            (63.39%)
+           186,521      cpu_core/L1-dcache-load-misses/                                         (63.39%)
+           270,336      cpu_core/l2_rqsts.all_demand_miss/                                        (63.39%)
+             9,754      cpu_core/LLC-load-misses/                                               (63.67%)
+               401      cpu_core/l2_rqsts.swpf_hit/                                             (63.96%)
+             1,515      cpu_core/l2_rqsts.swpf_miss/                                            (36.61%)
+             1,354      cpu_core/sw_prefetch_access.t0/                                         (36.61%)
+             1,541      cpu_core/sw_prefetch_access.t1_t2/                                        (36.33%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.04%)
+
+       0.335075644 seconds time elapsed
+
+       0.321886000 seconds user
+       0.016994000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 8
+
+Time WITHOUT software prefetching: 77 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 25 microseconds.Speedup (with software prefetching and simd) = 3.08x
+
+ Performance counter stats for './emb both':
+
+    13,239,482,331      instructions                     #    3.44  insn per cycle              (45.19%)
+     3,850,953,032      cycles                                                                  (54.33%)
+         5,130,595      cache-misses                                                            (63.46%)
+           233,946      cpu_core/L1-dcache-load-misses/                                         (63.57%)
+           669,583      cpu_core/l2_rqsts.all_demand_miss/                                        (63.68%)
+            31,767      cpu_core/LLC-load-misses/                                               (63.79%)
+               971      cpu_core/l2_rqsts.swpf_hit/                                             (63.91%)
+                38      cpu_core/l2_rqsts.swpf_miss/                                            (36.43%)
+             3,546      cpu_core/sw_prefetch_access.t0/                                         (36.32%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.21%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.09%)
+
+       0.883077859 seconds time elapsed
+
+       0.846936000 seconds user
+       0.039997000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 16
+
+Time WITHOUT software prefetching: 167 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 66 microseconds.Speedup (with software prefetching and simd) = 2.5303x
+
+ Performance counter stats for './emb both':
+
+    26,533,486,990      instructions                     #    3.44  insn per cycle              (45.35%)
+     7,718,751,655      cycles                                                                  (54.46%)
+        10,361,349      cache-misses                                                            (63.56%)
+           563,904      cpu_core/L1-dcache-load-misses/                                         (63.58%)
+         1,283,095      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+            97,187      cpu_core/LLC-load-misses/                                               (63.69%)
+             2,370      cpu_core/l2_rqsts.swpf_hit/                                             (63.75%)
+                32      cpu_core/l2_rqsts.swpf_miss/                                            (36.42%)
+             7,105      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.31%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.25%)
+
+       1.774792629 seconds time elapsed
+
+       1.691634000 seconds user
+       0.087032000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 64
+
+Time WITHOUT software prefetching: 229 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 122 microseconds.Speedup (with software prefetching and simd) = 1.87705x
+
+ Performance counter stats for './emb both':
+
+   105,988,821,872      instructions                     #    3.38  insn per cycle              (45.44%)
+    31,363,762,404      cycles                                                                  (54.53%)
+        41,278,164      cache-misses                                                            (63.63%)
+         2,231,787      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+         4,895,004      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+           243,598      cpu_core/LLC-load-misses/                                               (63.63%)
+             6,271      cpu_core/l2_rqsts.swpf_hit/                                             (63.65%)
+               214      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+            28,768      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.37%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.35%)
+
+       7.188468085 seconds time elapsed
+
+       6.868237000 seconds user
+       0.324011000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 10
+
+Time WITHOUT software prefetching: 84 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 30 microseconds.Speedup (with software prefetching and simd) = 2.8x
+
+ Performance counter stats for './emb both':
+
+    16,568,487,632      instructions                     #    3.47  insn per cycle              (45.45%)
+     4,778,006,837      cycles                                                                  (54.54%)
+         6,539,182      cache-misses                                                            (63.63%)
+           398,425      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+           796,365      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+            23,003      cpu_core/LLC-load-misses/                                               (63.62%)
+             1,254      cpu_core/l2_rqsts.swpf_hit/                                             (63.63%)
+             1,559      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+             4,399      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+             1,539      cpu_core/sw_prefetch_access.t1_t2/                                        (36.38%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.37%)
+
+       1.096166688 seconds time elapsed
+
+       1.054078000 seconds user
+       0.045959000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 40000
+Embedding Dimension: 8
+
+Time WITHOUT software prefetching: 25 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 23 microseconds.Speedup (with software prefetching and simd) = 1.08696x
+
+ Performance counter stats for './emb both':
+
+        70,802,399      instructions                     #    1.96  insn per cycle              (33.07%)
+        36,049,875      cycles                                                                  (44.23%)
+            84,257      cache-misses                                                            (55.40%)
+            60,032      cpu_core/L1-dcache-load-misses/                                         (55.41%)
+            52,849      cpu_core/l2_rqsts.all_demand_miss/                                        (55.26%)
+             4,874      cpu_core/LLC-load-misses/                                               (63.21%)
+                13      cpu_core/l2_rqsts.swpf_hit/                                             (74.39%)
+                 0      cpu_core/l2_rqsts.swpf_miss/                                            (44.59%)
+                35      cpu_core/sw_prefetch_access.t0/                                         (44.74%)
+             1,522      cpu_core/sw_prefetch_access.t1_t2/                                        (36.79%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (25.61%)
+
+       0.005294704 seconds time elapsed
+
+       0.009181000 seconds user
+       0.000000000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 40000
+Embedding Dimension: 512
+
+Time WITHOUT software prefetching: 680 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 345 microseconds.Speedup (with software prefetching and simd) = 1.97101x
+
+ Performance counter stats for './emb both':
+
+     6,836,356,398      instructions                     #    3.49  insn per cycle              (45.41%)
+     1,958,415,514      cycles                                                                  (54.50%)
+         2,835,696      cache-misses                                                            (63.60%)
+           285,315      cpu_core/L1-dcache-load-misses/                                         (63.61%)
+           397,722      cpu_core/l2_rqsts.all_demand_miss/                                        (63.61%)
+            26,007      cpu_core/LLC-load-misses/                                               (63.61%)
+               375      cpu_core/l2_rqsts.swpf_hit/                                             (63.62%)
+                16      cpu_core/l2_rqsts.swpf_miss/                                            (36.39%)
+             1,802      cpu_core/sw_prefetch_access.t0/                                         (36.39%)
+             1,538      cpu_core/sw_prefetch_access.t1_t2/                                        (36.39%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.38%)
+
+       0.447078982 seconds time elapsed
+
+       0.429863000 seconds user
+       0.020993000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 40000
+Embedding Dimension: 1024
+
+Time WITHOUT software prefetching: 1212 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 574 microseconds.Speedup (with software prefetching and simd) = 2.1115x
+
+ Performance counter stats for './emb both':
+
+    13,608,317,071      instructions                     #    3.49  insn per cycle              (45.25%)
+     3,901,589,807      cycles                                                                  (54.37%)
+         5,303,630      cache-misses                                                            (63.50%)
+           311,839      cpu_core/L1-dcache-load-misses/                                         (63.51%)
+           672,826      cpu_core/l2_rqsts.all_demand_miss/                                        (63.62%)
+            56,867      cpu_core/LLC-load-misses/                                               (63.73%)
+             1,093      cpu_core/l2_rqsts.swpf_hit/                                             (63.83%)
+             1,452      cpu_core/l2_rqsts.swpf_miss/                                            (36.49%)
+             3,584      cpu_core/sw_prefetch_access.t0/                                         (36.38%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.27%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.17%)
+
+       0.894957637 seconds time elapsed
+
+       0.859693000 seconds user
+       0.039031000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 40000
+Embedding Dimension: 2048
+
+Time WITHOUT software prefetching: 2383 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 1012 microseconds.Speedup (with software prefetching and simd) = 2.35474x
+
+ Performance counter stats for './emb both':
+
+    27,216,281,916      instructions                     #    3.48  insn per cycle              (45.40%)
+     7,819,121,509      cycles                                                                  (54.52%)
+        10,750,786      cache-misses                                                            (63.65%)
+           741,624      cpu_core/L1-dcache-load-misses/                                         (63.70%)
+         1,312,134      cpu_core/l2_rqsts.all_demand_miss/                                        (63.71%)
+            66,325      cpu_core/LLC-load-misses/                                               (63.71%)
+             2,070      cpu_core/l2_rqsts.swpf_hit/                                             (63.71%)
+             1,330      cpu_core/l2_rqsts.swpf_miss/                                            (36.30%)
+             7,187      cpu_core/sw_prefetch_access.t0/                                         (36.29%)
+             1,546      cpu_core/sw_prefetch_access.t1_t2/                                        (36.29%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.29%)
+
+       1.793201501 seconds time elapsed
+
+       1.723090000 seconds user
+       0.074003000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 50000
+Embedding Dimension: 100
+
+Time WITHOUT software prefetching: 240 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 153 microseconds.Speedup (with software prefetching and simd) = 1.56863x
+
+ Performance counter stats for './emb both':
+
+     1,628,702,685      instructions                     #    3.23  insn per cycle              (43.74%)
+       504,104,507      cycles                                                                  (53.23%)
+           664,832      cache-misses                                                            (62.71%)
+            58,927      cpu_core/L1-dcache-load-misses/                                         (63.57%)
+           105,097      cpu_core/l2_rqsts.all_demand_miss/                                        (64.43%)
+            11,076      cpu_core/LLC-load-misses/                                               (65.29%)
+               172      cpu_core/l2_rqsts.swpf_hit/                                             (65.50%)
+             1,520      cpu_core/l2_rqsts.swpf_miss/                                            (36.43%)
+               461      cpu_core/sw_prefetch_access.t0/                                         (35.57%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (34.71%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (34.50%)
+
+       0.112246536 seconds time elapsed
+
+       0.110152000 seconds user
+       0.006008000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 32
+
+Time WITHOUT software prefetching: 193 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 77 microseconds.Speedup (with software prefetching and simd) = 2.50649x
+
+ Performance counter stats for './emb both':
+
+    52,984,976,343      instructions                     #    3.44  insn per cycle              (45.42%)
+    15,404,248,676      cycles                                                                  (54.51%)
+        20,844,857      cache-misses                                                            (63.61%)
+         1,145,252      cpu_core/L1-dcache-load-misses/                                         (63.61%)
+         2,482,461      cpu_core/l2_rqsts.all_demand_miss/                                        (63.62%)
+           134,025      cpu_core/LLC-load-misses/                                               (63.65%)
+             4,922      cpu_core/l2_rqsts.swpf_hit/                                             (63.67%)
+             1,624      cpu_core/l2_rqsts.swpf_miss/                                            (36.39%)
+            14,171      cpu_core/sw_prefetch_access.t0/                                         (36.38%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.35%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.33%)
+
+       3.535804054 seconds time elapsed
+
+       3.387672000 seconds user
+       0.152030000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 15
+
+Time WITHOUT software prefetching: 200 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 68 microseconds.Speedup (with software prefetching and simd) = 2.94118x
+
+ Performance counter stats for './emb both':
+
+    24,853,045,416      instructions                     #    3.38  insn per cycle              (45.42%)
+     7,344,613,579      cycles                                                                  (54.56%)
+         9,918,515      cache-misses                                                            (63.69%)
+           655,908      cpu_core/L1-dcache-load-misses/                                         (63.70%)
+         1,222,043      cpu_core/l2_rqsts.all_demand_miss/                                        (63.69%)
+            80,036      cpu_core/LLC-load-misses/                                               (63.69%)
+             1,786      cpu_core/l2_rqsts.swpf_hit/                                             (63.69%)
+             1,592      cpu_core/l2_rqsts.swpf_miss/                                            (36.30%)
+             6,742      cpu_core/sw_prefetch_access.t0/                                         (36.31%)
+             1,542      cpu_core/sw_prefetch_access.t1_t2/                                        (36.31%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.31%)
+
+       1.682031310 seconds time elapsed
+
+       1.609947000 seconds user
+       0.075997000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 5000000
+Embedding Dimension: 16
+
+Time WITHOUT software prefetching: 168 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 36 microseconds.Speedup (with software prefetching and simd) = 4.66667x
+
+ Performance counter stats for './emb both':
+
+    26,495,308,100      instructions                     #    3.42  insn per cycle              (45.46%)
+     7,748,842,506      cycles                                                                  (54.55%)
+        10,517,264      cache-misses                                                            (63.64%)
+           634,331      cpu_core/L1-dcache-load-misses/                                         (63.64%)
+         1,329,205      cpu_core/l2_rqsts.all_demand_miss/                                        (63.63%)
+           123,996      cpu_core/LLC-load-misses/                                               (63.64%)
+             1,558      cpu_core/l2_rqsts.swpf_hit/                                             (63.64%)
+                85      cpu_core/l2_rqsts.swpf_miss/                                            (36.36%)
+             7,138      cpu_core/sw_prefetch_access.t0/                                         (36.37%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.36%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.36%)
+
+       1.778429385 seconds time elapsed
+
+       1.704261000 seconds user
+       0.078011000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 2000000
+Embedding Dimension: 512
+
+Time WITHOUT software prefetching: 706 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 364 microseconds.Speedup (with software prefetching and simd) = 1.93956x
+
+ Performance counter stats for './emb both':
+
+   339,056,069,563      instructions                     #    3.46  insn per cycle              (45.45%)
+    98,083,317,963      cycles                                                                  (54.54%)
+       131,747,575      cache-misses                                                            (63.63%)
+         7,776,748      cpu_core/L1-dcache-load-misses/                                         (63.63%)
+        15,341,340      cpu_core/l2_rqsts.all_demand_miss/                                        (63.64%)
+           670,442      cpu_core/LLC-load-misses/                                               (63.64%)
+            29,978      cpu_core/l2_rqsts.swpf_hit/                                             (63.65%)
+               558      cpu_core/l2_rqsts.swpf_miss/                                            (36.37%)
+            89,894      cpu_core/sw_prefetch_access.t0/                                         (36.36%)
+                 0      cpu_core/sw_prefetch_access.t1_t2/                                        (36.36%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.35%)
+
+      22.465376274 seconds time elapsed
+
+      21.540302000 seconds user
+       0.929013000 seconds sys
+
+
+
+=== Configuration ===
+Embedding Table Size: 1000000
+Embedding Dimension: 31
+
+Time WITHOUT software prefetching: 160 microseconds.Mode: SOFTWARE PREFETCHING + SIMD
+Prefetch Distance: 8
+Cache Level: 1 (L2)
+SIMD Width: 256 bits
+
+Time WITH software prefetching and SIMD: 62 microseconds.Speedup (with software prefetching and simd) = 2.58065x
+
+ Performance counter stats for './emb both':
+
+    10,327,886,446      instructions                     #    3.49  insn per cycle              (45.48%)
+     2,955,243,662      cycles                                                                  (54.56%)
+         3,904,203      cache-misses                                                            (63.65%)
+           316,200      cpu_core/L1-dcache-load-misses/                                         (63.65%)
+           562,026      cpu_core/l2_rqsts.all_demand_miss/                                        (63.65%)
+            27,645      cpu_core/LLC-load-misses/                                               (63.65%)
+               651      cpu_core/l2_rqsts.swpf_hit/                                             (63.65%)
+                27      cpu_core/l2_rqsts.swpf_miss/                                            (36.35%)
+             2,729      cpu_core/sw_prefetch_access.t0/                                         (36.35%)
+             1,573      cpu_core/sw_prefetch_access.t1_t2/                                        (36.35%)
+                 0      cpu_core/sw_prefetch_access.nta/                                        (36.35%)
+
+       0.678635420 seconds time elapsed
+
+       0.648465000 seconds user
+       0.034024000 seconds sys
+
+
