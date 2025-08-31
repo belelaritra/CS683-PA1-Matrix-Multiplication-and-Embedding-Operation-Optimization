@@ -10,14 +10,14 @@ using namespace std;
 using namespace std::chrono;
 
 const int embedding_table_size = 1000000; // Size : 100K | 500K | 1M | 2M | 5M
-const int embedding_dim = 31;            // Dim :  64 | 128 | 256 | 512 | 1024
+const int embedding_dim = 128;            // Dim :  64 | 128 | 256 | 512 | 1024
 const int input_size = 720;
 const int num_bags = 20;
 
 
 const int PREFETCH_DISTANCE = 8;    // PD : 2 | 4 | 8 | 16 | 32 | 64
 const int CACHE_LEVEL = 1;          // CL : 0 | 1 | 2 | 3 
-const int SIMD_WIDTH = 256;         // SIMD : 128 | 256
+const int SIMD_WIDTH = 128;         // SIMD : 128 | 256
 
 int random_int(int range) {
     static random_device rd;
@@ -78,203 +78,50 @@ long long run_with_simd(const vector<float>& embedding_table, const vector<int>&
     //----------------------------------------------------- Write your code here ----------------------------------------------------------------
     vector<vector<float>> output;
 
-for (size_t i = 0; i < offsets.size(); ++i) {
-    int start_idx = offsets[i];
-    int end_idx = (i + 1 < offsets.size()) ? offsets[i + 1] : input.size();
-    
-    vector<float> bag_embedding(embedding_dim, 0.0f);  // No padding needed
-    
-    for (int j = start_idx; j < end_idx; ++j) {
-        if (input[j] >= embedding_table.size() / embedding_dim) {
-            continue; // Bounds checking
-        }
+    for (size_t i = 0; i < offsets.size(); ++i) {
+        int start_idx = offsets[i];
+        int end_idx = (i + 1 < offsets.size()) ? offsets[i + 1] : input.size();
         
-        const float* data_ptr = &embedding_table[input[j] * embedding_dim];
+        vector<float> bag_embedding(embedding_dim, 0.0f);  // No padding needed
         
-        int d = 0;
-        
-        // AVX256: Process 8 floats at a time (unaligned only)
-        // #ifdef __AVX__
-        if (SIMD_WIDTH >= 256) {
-            // cout<<"AVX"<<endl;
-            for (; d <= embedding_dim - 8; d += 8) {
-                __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
-                __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
-                __m256 result = _mm256_add_ps(bag_vec, data_vec);
-                _mm256_storeu_ps(&bag_embedding[d], result);
+        for (int j = start_idx; j < end_idx; ++j) {
+            if (input[j] >= embedding_table.size() / embedding_dim) {
+                continue; // Bounds checking
+            }
+            
+            const float* data_ptr = &embedding_table[input[j] * embedding_dim];
+            
+            int d = 0;
+            
+            // AVX (256-bit SIMD) for 8 floats at a time (unaligned only)
+            if (SIMD_WIDTH >= 256) {
+                for (; d <= embedding_dim - 8; d += 8) {
+                    __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
+                    __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
+                    __m256 result = _mm256_add_ps(bag_vec, data_vec);
+                    _mm256_storeu_ps(&bag_embedding[d], result);
+                }
+            }
+            
+            // SSE128: Process 4 floats at a time (unaligned only)
+            else if (SIMD_WIDTH >= 128) {
+                for (; d <= embedding_dim - 4; d += 4) {
+                    __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
+                    __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
+                    __m128 result = _mm_add_ps(bag_vec, data_vec);
+                    _mm_storeu_ps(&bag_embedding[d], result);
+                }
+            }
+            
+            // Scalar fallback for remaining elements
+            for (; d < embedding_dim; ++d) {
+                bag_embedding[d] += data_ptr[d];
             }
         }
-        // #endif
         
-        // SSE128: Process 4 floats at a time (unaligned only)
-        // #ifdef __SSE__
-        else if (SIMD_WIDTH >= 128) {
-            // cout<<"SSE"<<endl;
-            for (; d <= embedding_dim - 4; d += 4) {
-                __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
-                __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
-                __m128 result = _mm_add_ps(bag_vec, data_vec);
-                _mm_storeu_ps(&bag_embedding[d], result);
-            }
-        }
-        // #endif
-        
-        // Scalar fallback for remaining elements
-        for (; d < embedding_dim; ++d) {
-            bag_embedding[d] += data_ptr[d];
-        }
+        output.push_back(std::move(bag_embedding));
     }
-    
-    output.push_back(std::move(bag_embedding));
-}
 
-    // vector<vector<float>> output;
-
-    // for (size_t i = 0; i < offsets.size(); ++i) {
-    //     int start_idx = offsets[i];
-    //     int end_idx = (i + 1 < offsets.size()) ? offsets[i + 1] : input.size();
-        
-    //     // Ensure bag_embedding is aligned to 32-byte boundary for AVX
-    //     size_t aligned_dim = ((embedding_dim + 7) / 8) * 8; // Round up to multiple of 8
-    //     vector<float> bag_embedding(aligned_dim, 0.0f);
-        
-    //     for (int j = start_idx; j < end_idx; ++j) {
-    //         // Bounds checking to prevent segmentation fault
-    //         if (input[j] >= embedding_table.size() / embedding_dim) {
-    //             continue; // Skip invalid indices
-    //         }
-            
-    //         const float* data_ptr = &embedding_table[input[j] * embedding_dim];
-            
-    //         int d = 0;
-            
-    //         // AVX (256-bit SIMD) for 8 floats at a time
-    //         #ifdef __AVX__
-    //         if (SIMD_WIDTH >= 256) {
-    //             for (; d <= embedding_dim - 8; d += 8) {
-    //                 // Check alignment - if not aligned, use unaligned loads
-    //                 if (reinterpret_cast<uintptr_t>(&bag_embedding[d]) % 32 == 0 && 
-    //                     reinterpret_cast<uintptr_t>(&data_ptr[d]) % 32 == 0) {
-    //                     __m256 bag_vec = _mm256_load_ps(&bag_embedding[d]);
-    //                     __m256 data_vec = _mm256_load_ps(&data_ptr[d]);
-    //                     __m256 result = _mm256_add_ps(bag_vec, data_vec);
-    //                     _mm256_store_ps(&bag_embedding[d], result);
-    //                 } else {
-    //                     __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
-    //                     __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
-    //                     __m256 result = _mm256_add_ps(bag_vec, data_vec);
-    //                     _mm256_storeu_ps(&bag_embedding[d], result);
-    //                 }
-    //             }
-    //         }
-    //         #endif
-            
-    //         // SSE (128-bit SIMD) for remaining 4 floats
-    //         #ifdef __SSE__
-    //         if (SIMD_WIDTH >= 128) {
-    //             for (; d <= embedding_dim - 4; d += 4) {
-    //                 // Check 16-byte alignment for SSE
-    //                 if (reinterpret_cast<uintptr_t>(&bag_embedding[d]) % 16 == 0 && 
-    //                     reinterpret_cast<uintptr_t>(&data_ptr[d]) % 16 == 0) {
-    //                     __m128 bag_vec = _mm_load_ps(&bag_embedding[d]);
-    //                     __m128 data_vec = _mm_load_ps(&data_ptr[d]);
-    //                     __m128 result = _mm_add_ps(bag_vec, data_vec);
-    //                     _mm_store_ps(&bag_embedding[d], result);
-    //                 } else {
-    //                     __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
-    //                     __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
-    //                     __m128 result = _mm_add_ps(bag_vec, data_vec);
-    //                     _mm_storeu_ps(&bag_embedding[d], result);
-    //                 }
-    //             }
-    //         }
-    //         #endif
-            
-    //         // Scalar fallback for remaining elements
-    //         for (; d < embedding_dim; ++d) {
-    //             bag_embedding[d] += data_ptr[d];
-    //         }
-    //     }
-        
-    //     // Resize to original embedding_dim to remove padding
-    //     bag_embedding.resize(embedding_dim);
-    //     output.push_back(bag_embedding);
-    // }
-
-    // vector<vector<float>> output;
-
-    // for (size_t i = 0; i < offsets.size(); ++i) {
-    //     int start_idx = offsets[i];
-    //     int end_idx = (i + 1 < offsets.size()) ? offsets[i + 1] : input.size();
-        
-    //     vector<float> bag_embedding(embedding_dim, 0.0f);
-        
-    //     for (int j = start_idx; j < end_idx; ++j) {
-    //         const float* data_ptr = &embedding_table[input[j] * embedding_dim];
-            
-    //         int d = 0;
-            
-    //         // AVX (256-bit SIMD) for 8 floats at a time
-    //         if (SIMD_WIDTH >= 256) {
-    //             for (; d <= embedding_dim - 8; d += 8) {
-    //                 __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
-    //                 __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
-    //                 __m256 result   = _mm256_add_ps(bag_vec, data_vec);
-    //                 _mm256_storeu_ps(&bag_embedding[d], result);
-    //             }
-    //         }
-    //         // SSE (128-bit SIMD) for 4 floats
-    //         if (SIMD_WIDTH >= 128) {
-    //             for (; d <= embedding_dim - 4; d += 4) {
-    //                 __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
-    //                 __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
-    //                 __m128 result   = _mm_add_ps(bag_vec, data_vec);
-    //                 _mm_storeu_ps(&bag_embedding[d], result);  // ✅ use unaligned store
-    //             }
-    //         }
-    //         // Scalar fallback
-    //         for (; d < embedding_dim; ++d) {
-    //             bag_embedding[d] += data_ptr[d];
-    //         }
-
-    //         // // AVX (256-bit SIMD) for 8 floats at a time
-    //         // if (SIMD_WIDTH >= 256) {
-    //         //     for (; d <= embedding_dim - 8; d += 8) {
-    //         //         __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
-    //         //         __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
-    //         //         __m256 result   = _mm256_add_ps(bag_vec, data_vec);
-    //         //         _mm256_storeu_ps(&bag_embedding[d], result);
-    //         //     }
-    //         // }
-    //         // // SSE (128-bit SIMD) for remaining 4 floats
-    //         // if (SIMD_WIDTH >= 128) {
-    //         //     for (; d <= embedding_dim - 4; d += 4) {
-    //         //         __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
-    //         //         __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
-    //         //         __m128 result = _mm_add_ps(bag_vec, data_vec);
-    //         //         _mm_storeu_ps(&bag_embedding[d], result);
-    //         //     }
-    //         // }
-            
-    //         // if (SIMD_WIDTH >= 64) {
-    //         //     for (; d <= embedding_dim - 2; d += 2) {
-    //         //         __m128 bag_vec = _mm_set_ps(0, 0, bag_embedding[d+1], bag_embedding[d]);
-    //         //         __m128 data_vec = _mm_set_ps(0, 0, data_ptr[d+1], data_ptr[d]);
-    //         //         __m128 result = _mm_add_ps(bag_vec, data_vec);
-                    
-    //         //         bag_embedding[d] = _mm_cvtss_f32(result);
-    //         //         bag_embedding[d+1] = _mm_cvtss_f32(_mm_shuffle_ps(result, result, 1));
-    //         //     }
-    //         // }
-            
-    //         // for (; d < embedding_dim; ++d) {
-    //         //     bag_embedding[d] += data_ptr[d];
-    //         // }
-    //     }
-        
-    //     output.push_back(bag_embedding);
-    // }
-    
     //-------------------------------------------------------------------------------------------------------------------------------------------
     
     auto end = high_resolution_clock::now();
@@ -313,32 +160,8 @@ long long run_with_prefetching_simd(const vector<float>& embedding_table, const 
             const float* data_ptr = &embedding_table[input[j] * embedding_dim];
             int d = 0;
             
-            // // AVX2 (256-bit SIMD) for 8 floats at a time
-            // if (SIMD_WIDTH >= 256) {
-            //     for (; d <= embedding_dim - 8; d += 8) {
-            //         __m256 bag_vec = _mm256_load_ps(&bag_embedding[d]);
-            //         __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
-            //         __m256 result = _mm256_add_ps(bag_vec, data_vec);
-            //         _mm256_store_ps(&bag_embedding[d], result);
-            //     }
-            // }
-            // // SSE (128-bit SIMD) for remaining 4 floats
-            // else if (SIMD_WIDTH >= 128) {
-            //     for (; d <= embedding_dim - 4; d += 4) {
-            //         __m128 bag_vec = _mm_load_ps(&bag_embedding[d]);
-            //         __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
-            //         __m128 result = _mm_add_ps(bag_vec, data_vec);
-            //         _mm_store_ps(&bag_embedding[d], result);
-            //     }
-            // }
-                
-
-
-
-
-            // AVX2 (256-bit SIMD) for 8 floats at a time
+            // AVX (256-bit SIMD) for 8 floats at a time
             if (SIMD_WIDTH >= 256) {
-                // cout<<"AVX"<<endl;
                 for (; d <= embedding_dim - 8; d += 8) {
                     __m256 bag_vec = _mm256_loadu_ps(&bag_embedding[d]);
                     __m256 data_vec = _mm256_loadu_ps(&data_ptr[d]);
@@ -346,9 +169,9 @@ long long run_with_prefetching_simd(const vector<float>& embedding_table, const 
                     _mm256_storeu_ps(&bag_embedding[d], result);
                 }
             }
+
             // SSE128: Process 4 floats at a time (unaligned only)
             else if (SIMD_WIDTH >= 128) {
-                // cout<<"SSE"<<endl;
                 for (; d <= embedding_dim - 4; d += 4) {
                     __m128 bag_vec = _mm_loadu_ps(&bag_embedding[d]);
                     __m128 data_vec = _mm_loadu_ps(&data_ptr[d]);
@@ -362,9 +185,6 @@ long long run_with_prefetching_simd(const vector<float>& embedding_table, const 
                 bag_embedding[d] += data_ptr[d];
             }
             
-            // for (; d < embedding_dim; ++d) {
-            //     bag_embedding[d] += data_ptr[d];
-            // }
         }
         
         output.push_back(bag_embedding);
@@ -443,10 +263,16 @@ int main(int argc, char* argv[]) {
     cout << "Embedding Table Size: " << embedding_table_size << endl;
     cout << "Embedding Dimension: " << embedding_dim << endl;
 
-    // Run selected mode
+    // NAIVE MODE
     if (mode == "naive") {
         long long time_naive = naive_emb(embedding_table, input, offsets);
+        for (size_t i = 0; i < embedding_table.size(); i += 16) {
+            _mm_clflush(&embedding_table[i]);
+        }
+        _mm_mfence();
+        long long time_naive2 = naive_emb(embedding_table, input, offsets);
     }
+    // SW PREFETCH MODE
     else if (mode == "prefetch") {
         // Run naive code 
         long long time_without_prefetch = naive_emb(embedding_table, input, offsets);
@@ -473,16 +299,11 @@ int main(int argc, char* argv[]) {
         cout << "\n\nSpeedup (with software prefetching) = " << speedup1 << "x\n";
 
     }
+    // SIMD MODE
     else if (mode == "simd") {
-         // Run naive code 
-        // ---------- Flush Cache Before Running Prefetching ----------
-        // for (size_t i = 0; i < embedding_table.size(); i += 16) {
-        //     _mm_clflush(&embedding_table[i]);
-        // }
-        // _mm_mfence();
         long long time_without_prefetch = naive_emb(embedding_table, input, offsets);
         
-        // ---------- Flush Cache Before Running Prefetching ----------
+        // ---------- Flush Cache Before Running ----------
         for (size_t i = 0; i < embedding_table.size(); i += 16) {
             _mm_clflush(&embedding_table[i]);
         }
@@ -496,11 +317,12 @@ int main(int argc, char* argv[]) {
         cout << "Speedup (with simd) = " << speedup2 << "x\n";
 
     }
+    // SW PREFETCH + SIMD
     else if (mode == "both") {
-         // Run naive code 
+        // Run naive code 
         long long time_without_prefetch = naive_emb(embedding_table, input, offsets);
         
-        // ---------- Flush Cache Before Running Prefetching ----------
+        // ---------- Flush Cache Before Running ----------
         for (size_t i = 0; i < embedding_table.size(); i += 16) {
             _mm_clflush(&embedding_table[i]);
         }
@@ -528,7 +350,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-
+    // -------------- TEMPLATE CODE --------------------
     // // Run emb with software prefetching 
     // long long time_with_prefetch = run_with_prefetching(embedding_table, input, offsets);
     // // Run emb with simd 
