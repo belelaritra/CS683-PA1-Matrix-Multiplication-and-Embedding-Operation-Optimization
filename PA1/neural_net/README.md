@@ -32,7 +32,8 @@ neural_net/
     ├── matrix_operation.c # YOUR IMPLEMENTATION GOES HERE
     └── nn.c             # Neural network implementation
 ```
-
+# compile the program using:
+make
 ## Run the program using
 perf stat -e instructions,cycles,L1-dcache-loads,L1-dcache-load-misses ./bin/main
 

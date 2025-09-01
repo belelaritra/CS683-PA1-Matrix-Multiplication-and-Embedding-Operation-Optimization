@@ -158,16 +158,16 @@ for (size_t i = 0; i < n; i++) {
 		__m256d sum_vec = _mm256_setzero_pd(); // 4 doubles
 		size_t l = 0;
 
-		for (; l + 8 <= k; l += 8) {
+		for (; l + 4 <= k; l += 4) {
 			__m256d a_vec = _mm256_loadu_pd(&A(i, l));
 			__m256d b_vec = _mm256_loadu_pd(&B(l, j)); // careful: access pattern!
 			__m256d mul   = _mm256_mul_pd(a_vec, b_vec);
 			sum_vec = _mm256_add_pd(sum_vec, mul);
 		}
 
-		double temp[8];
+		double temp[4];
 		_mm256_storeu_pd(temp, sum_vec);
-		double sum = temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7];
+		double sum = temp[0] + temp[1] + temp[2] + temp[3];
 
 		for (; l < k; l++) {
 			sum += A(i, l) * B(l, j);
