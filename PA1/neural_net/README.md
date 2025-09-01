@@ -33,6 +33,11 @@ neural_net/
     └── nn.c             # Neural network implementation
 ```
 
+## Run the program using
+perf stat -e instructions,cycles,L1-dcache-loads,L1-dcache-load-misses ./bin/main
+
+
+
 ## Implementation Requirements
 
 ### Primary Task: Matrix Multiplication Optimisation

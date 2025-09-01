@@ -136,23 +136,23 @@ void simd_mat_mul(double *A, double *B, double *C, int size) {
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 for (int i = 0; i < size; i++) {
-	for (int k = 0; k < size; k++) {
-		__m128d a_vec = _mm_set1_pd(A[i * size + k]);  // Broadcast scalar A[i,k]
-		int j = 0;
+    for (int k = 0; k < size; k++) {
+        __m256d a_vec = _mm256_set1_pd(A[i * size + k]);  // Broadcast scalar A[i,k]
+        int j = 0;
 
-		// Process 2 elements at a time
-		for (; j <= size - 2; j += 2) {
-			__m128d b_vec = _mm_loadu_pd(&B[k * size + j]);
-			__m128d c_vec = _mm_loadu_pd(&C[i * size + j]);
-			c_vec = _mm_add_pd(c_vec, _mm_mul_pd(a_vec, b_vec));
-			_mm_storeu_pd(&C[i * size + j], c_vec);
-		}
+        // Process 4 elements at a time
+        for (; j <= size - 4; j += 4) {
+            __m256d b_vec = _mm256_loadu_pd(&B[k * size + j]);   // Load 4 elements of B
+            __m256d c_vec = _mm256_loadu_pd(&C[i * size + j]);   // Load 4 elements of C
+            c_vec = _mm256_add_pd(c_vec, _mm256_mul_pd(a_vec, b_vec)); // Multiply + Add
+            _mm256_storeu_pd(&C[i * size + j], c_vec);           // Store back result
+        }
 
-		// Handle remaining elements
-		for (; j < size; j++) {
-			C[i * size + j] += A[i * size + k] * B[k * size + j];
-		}
-	}
+        // Handle remaining elements (less than 4)
+        for (; j < size; j++) {
+            C[i * size + j] += A[i * size + k] * B[k * size + j];
+        }
+    }
 }
 }
 
