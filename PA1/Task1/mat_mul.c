@@ -7,7 +7,7 @@
  *******************************************************************/
 
 // PA 1: Matrix Multiplication
-
+/// try sse vs avx as well 
 // includes
 #include <stdio.h>
 #include <stdlib.h>         // for malloc, free, atoi
@@ -17,10 +17,10 @@
 #include <immintrin.h>		// for AVX
 
 #include "helper.h"			// for helper functions
-
+/// compare 
 // defines
 // NOTE: you can change this value as per your requirement
-#define TILE_SIZE	100		// size of the tile for blocking
+#define TILE_SIZE 256	// size of the tile for blocking
 
 /**
  * @brief 		Performs matrix multiplication of two matrices.
@@ -51,6 +51,34 @@ void loop_opt_mat_mul(double *A, double *B, double *C, int size){
 //----------------------------------------------------- Write your code here ----------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
+for (int i = 0; i < size; i++) {
+	for (int k = 0; k < size; k++) {
+		double a = A[i * size + k];
+		int j = 0;
+		// unroll by 4
+		for (; j < size; j++) {
+			C[i * size + j    ] += a * B[k * size + j    ];
+			 C[i * size + j + 1] += a * B[k * size + j + 1];
+			 C[i * size + j + 2] += a * B[k * size + j + 2];
+			C[i * size + j + 3] += a * B[k * size + j + 3];
+		}
+		for (; j < size; j++) {
+			C[i * size + j] += a * B[k * size + j];
+		}
+	}
+}
+
+
+/// k-i-j
+// for (int k = 0; k < size; k++) {
+// 	for (int i = 0; i < size; i++) {
+// 		double a = A[i * size + k];
+// 		for (int j = 0; j < size; j++) {
+// 			C[i * size + j] += a * B[k * size + j];
+// 		}
+// 	}
+// }
+
 
 }
 
@@ -71,7 +99,27 @@ void tile_mat_mul(double *A, double *B, double *C, int size, int tile_size) {
     
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
-    
+ 
+for (int ii = 0; ii < size; ii += tile_size) {
+	for (int jj = 0; jj < size; jj += tile_size) {
+		for (int kk = 0; kk < size; kk += tile_size) {
+
+			int i_max = (ii + tile_size > size) ? size : ii + tile_size;
+			int j_max = (jj + tile_size > size) ? size : jj + tile_size;
+			int k_max = (kk + tile_size > size) ? size : kk + tile_size;
+
+			for (int i = ii; i < i_max; i++) {
+				for (int k = kk; k < k_max; k++) {
+					double a = A[i * size + k];
+					for (int j = jj; j < j_max; j++) {
+						C[i * size + j] += a * B[k * size + j];
+					}
+				}
+			}
+		}
+	}
+}
+
 }
 
 /**
@@ -87,7 +135,25 @@ void simd_mat_mul(double *A, double *B, double *C, int size) {
     
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
-    
+for (int i = 0; i < size; i++) {
+	for (int k = 0; k < size; k++) {
+		__m128d a_vec = _mm_set1_pd(A[i * size + k]);  // Broadcast scalar A[i,k]
+		int j = 0;
+
+		// Process 2 elements at a time
+		for (; j <= size - 2; j += 2) {
+			__m128d b_vec = _mm_loadu_pd(&B[k * size + j]);
+			__m128d c_vec = _mm_loadu_pd(&C[i * size + j]);
+			c_vec = _mm_add_pd(c_vec, _mm_mul_pd(a_vec, b_vec));
+			_mm_storeu_pd(&C[i * size + j], c_vec);
+		}
+
+		// Handle remaining elements
+		for (; j < size; j++) {
+			C[i * size + j] += A[i * size + k] * B[k * size + j];
+		}
+	}
+}
 }
 
 /**
@@ -105,7 +171,47 @@ void combination_mat_mul(double *A, double *B, double *C, int size, int tile_siz
     
     
 //-------------------------------------------------------------------------------------------------------------------------------------------
-    
+for (int ii = 0; ii < size; ii += tile_size) {
+	for (int jj = 0; jj < size; jj += tile_size) {
+		for (int kk = 0; kk < size; kk += tile_size) {
+
+			int i_max = (ii + tile_size > size) ? size : ii + tile_size;
+			int j_max = (jj + tile_size > size) ? size : jj + tile_size;
+			int k_max = (kk + tile_size > size) ? size : kk + tile_size;
+
+			for (int i = ii; i < i_max; ++i) {
+				// Process j in vector-sized chunks (4 doubles per __m256d)
+				int j = jj;
+				for (; j <= j_max - 4; j += 4) {
+					// load current C vector (accumulator)
+					__m256d c_vec = _mm256_loadu_pd(&C[i * size + j]);
+
+					// accumulate over k
+					for (int k = kk; k < k_max; ++k) {
+						// broadcast A[i,k]
+						__m256d a_vec = _mm256_set1_pd(A[i * size + k]);
+						// load B[k, j..j+3]
+						__m256d b_vec = _mm256_loadu_pd(&B[k * size + j]);
+						// c_vec += a_vec * b_vec
+						c_vec = _mm256_add_pd(c_vec, _mm256_mul_pd(a_vec, b_vec));
+					}
+
+					// store back
+					_mm256_storeu_pd(&C[i * size + j], c_vec);
+				}
+
+				// Handle scalar remainder columns
+				for (; j < j_max; ++j) {
+					double c_val = C[i * size + j];
+					for (int k = kk; k < k_max; ++k) {
+						c_val += A[i * size + k] * B[k * size + j];
+					}
+					C[i * size + j] = c_val;
+				}
+			}
+		}
+	}
+} 
 }
 
 // NOTE: DO NOT CHANGE ANYTHING BELOW THIS LINE
@@ -140,10 +246,10 @@ int main(int argc, char **argv) {
 
 		// perform normal matrix multiplication
 		auto start = std::chrono::high_resolution_clock::now();
-		naive_mat_mul(A, B, C, size);
-		auto end = std::chrono::high_resolution_clock::now();
-		auto time_naive_mat_mul = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		printf("Normal matrix multiplication took %ld ms to execute \n\n", time_naive_mat_mul);
+		 naive_mat_mul(A, B, C, size);
+		 auto end = std::chrono::high_resolution_clock::now();
+		 auto time_naive_mat_mul = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+	     printf("Normal matrix multiplication took %ld ms to execute \n\n", time_naive_mat_mul);
 
 	#ifdef OPTIMIZE_LOOP_OPT
 		// Task 1a: perform matrix multiplication with loop optimization
@@ -199,7 +305,7 @@ int main(int argc, char **argv) {
 		end = std::chrono::high_resolution_clock::now();
 		auto time_combination = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 		printf("Combined optimization matrix multiplication took %ld ms to execute \n", time_combination);
-		printf("Normalized performance: %f \n\n", (double)time_naive_mat_mul / time_combination);
+		 printf("Normalized performance: %f \n\n", (double)time_naive_mat_mul / time_combination);
 	#endif
 
 		// free allocated memory

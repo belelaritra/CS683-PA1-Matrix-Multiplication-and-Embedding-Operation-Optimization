@@ -2,16 +2,16 @@ BIN=mat_mul
 CC=g++
 
 tiling: mat_mul
-	g++ mat_mul.c -D OPTIMIZE_TILING -o $(BIN)/$@
+	g++ mat_mul.c -D OPTIMIZE_TILING -mavx -O3 -o $(BIN)/$@
 
 loop: mat_mul
-	g++ mat_mul.c -D OPTIMIZE_LOOP_OPT -o $(BIN)/$@
+	g++ mat_mul.c -D OPTIMIZE_LOOP_OPT -mavx -O3 -o $(BIN)/$@
 
 simd: mat_mul
-	g++ mat_mul.c -D OPTIMIZE_SIMD -o $(BIN)/$@
+	g++ mat_mul.c -D OPTIMIZE_SIMD -mavx -O3 -o $(BIN)/$@
 
 combination: mat_mul
-	g++ mat_mul.c -D OPTIMIZE_COMBINED -o $(BIN)/$@
+	g++ mat_mul.c -D OPTIMIZE_COMBINED -mavx -O3 -o $(BIN)/$@
 
 all: mat_mul
 	g++ mat_mul.c -D OPTIMIZE_TILING -D OPTIMIZE_SIMD -D OPTIMIZE_LOOP_OPT -D OPTIMIZE_COMBINED -o $(BIN)/$@

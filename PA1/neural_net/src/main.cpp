@@ -9,11 +9,11 @@ int counter =0 ;
 int main(){
 
 	// Run matrix multiplication benchmark
-	PerformanceBenchmark::benchmarkMatrixMultiplication(512);
+	PerformanceBenchmark::benchmarkMatrixMultiplication(128);
 	
-	Matrix A(4, 4);
+	Matrix A(1024, 1024);
 	A.xavierInit();
-	A.print("Matrix A:");
+	// A.print("Matrix A:");
 
 	cout<<"Matrix multiplication benchmark completed."<<endl;
 
