@@ -56,7 +56,7 @@ for (int i = 0; i < size; i++) {
 		double a = A[i * size + k];
 		int j = 0;
 		// unroll by 4
-		for (; j < size; j++) {
+		for (; j < size; j+=4) {
 			C[i * size + j    ] += a * B[k * size + j    ];
 			 C[i * size + j + 1] += a * B[k * size + j + 1];
 			 C[i * size + j + 2] += a * B[k * size + j + 2];
@@ -121,7 +121,6 @@ for (int ii = 0; ii < size; ii += tile_size) {
 }
 
 }
-
 /**
  * @brief 		Task 1C: Performs matrix multiplication of two matrices using SIMD instructions.
  * @param 		A 			pointer to the first matrix
@@ -154,6 +153,31 @@ for (int i = 0; i < size; i++) {
         }
     }
 }
+
+
+/*  
+for 128 bit simd use it
+for (int i = 0; i < size; i++) {
+	for (int k = 0; k < size; k++) {
+		__m128d a_vec = _mm_set1_pd(A[i * size + k]);  // Broadcast scalar A[i,k]
+		int j = 0;
+
+		// Process 2 elements at a time (128-bit = 2 doubles)
+		for (; j <= size - 2; j += 2) {
+			__m128d b_vec = _mm_loadu_pd(&B[k * size + j]);   // Load 2 elements of B
+			__m128d c_vec = _mm_loadu_pd(&C[i * size + j]);   // Load 2 elements of C
+			c_vec = _mm_add_pd(c_vec, _mm_mul_pd(a_vec, b_vec)); // Multiply + Add
+			_mm_storeu_pd(&C[i * size + j], c_vec);           // Store back result
+		}
+
+		// Handle remaining elements (if size not divisible by 2)
+		for (; j < size; j++) {
+			C[i * size + j] += A[i * size + k] * B[k * size + j];
+		}
+	}
+}
+*/
+
 }
 
 /**

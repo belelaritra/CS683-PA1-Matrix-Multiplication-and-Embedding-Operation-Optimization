@@ -55,3 +55,10 @@ The report should include:
 - `mat_mul_analysis.pdf` with complete analysis
 - Graphs and plots embedded in the report
 - Code is clean, modular, and well-commented
+
+
+
+# command to run the code
+perf stat -r 5 -e instructions,cycles,L1-dcache-loads,L1-dcache-load-misses ./mat_mul/simd 256
+change file name : simd,loop,combination
+change matrix size: 128,256,512,1024,2048
