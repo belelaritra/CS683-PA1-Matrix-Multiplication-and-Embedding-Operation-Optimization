@@ -1,8 +1,9 @@
 # Task 2 : Embed it - Report
-
+<!-- 
 <details open>
 
-<summary>1. Introduction</summary>
+<summary>1. Introduction</summary> -->
+# 1. Introduction:
 
 ## 1. 📊 Example : Embedding Table (4 Dimensions)
 Each movie is represented by a vector of 4 scores (dimensions):
@@ -166,14 +167,15 @@ This embedding bagging operation is the **core of recommendation systems**:
 
 By **aggregating interactions**, AI systems learn your preferences and suggest similar content!
 
-</details>
+<!-- </details> -->
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 
-<details open>
+<!-- <details open>
 
-<summary>2. Instructions to Run Experiments</summary>
+<summary>2. Instructions to Run Experiments</summary> -->
 
+# 2. Instructions to Run Experiments
 ## 1. Overview
 
 This assignment implements an **Embedding Operation with Software Prefetch Optimization & SIMD**.  
@@ -298,14 +300,14 @@ sudo modprobe msr
 - `cache_effect.pdf` documenting analysis, including:  
   - Software prefetch & SIMD impact  
 
-</details>
+<!-- </details> -->
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 
-<details open>
+<!-- <details open>
 
-<summary>3. System Architecture & Setup</summary>
-
+<summary>3. System Architecture & Setup</summary> -->
+# System Architecture & Setup
 <!-- # 🖥️ System Architecture & Hardware Setup -->
 
 ## 1. Machine Details
@@ -354,13 +356,13 @@ sudo modprobe msr
 
 
 ---
-</details>
+<!-- </details>
 
 
 <details open>
 
-<summary>4. Task 2A – Cache & Speedup Analysis</summary>
-
+<summary>4. Task 2A – Software prefetching</summary> -->
+# 4. Task 2A – Software prefetching
 ## 4.1 Experimental Setup
 
 **Dataset & Parameters:**
@@ -474,12 +476,13 @@ sudo modprobe msr
   - Prefetching into L2/LLC outperforms L1 due to higher capacity and better residency for 128-dim embeddings.  
 
 
-</details>
+<!-- </details>
 
 
 <details open>
 
-<summary>5. Task 2B – SIMD Execution & Speedup</summary>
+<summary>5. Task 2B – SIMD</summary> -->
+# 5. Task 2B – SIMD
 
 ### 5.1 Experimental Setup
 - SIMD widths tested: 128-bit (SSE), 256-bit (AVX)  
@@ -533,12 +536,13 @@ sudo modprobe msr
 - **Cache Behavior:** No explicit cache flush; results reflect steady-state usage.  
 - **Execution Time Units:** All times reported in microseconds (µs).  
 - **Notation:** K = Thousand, M = Million, B = Billion.  
-
+<!-- 
 </details>
 
 <details open>
 
-<summary>6. Task 2C – Combined SW Prefetch & SIMD</summary>
+<summary>6. Task 2C – Software prefetching + SIMD</summary> -->
+# 6. Task 2C – Software prefetching + SIMD
 
 ### 6.1 Experimental Setup
 - **SW Prefetch:** PD = 8, Cache Fill Level = L1  
@@ -578,11 +582,12 @@ sudo modprobe msr
 - For **large dimensions (e.g., 2048)**, **SIMD clearly outperformed SW Prefetch**, since vectorized computation leveraged wider data parallelism while prefetching overheads became less effective.  
 - For **irregular dimensions not aligned with SIMD width (e.g., 31)**, performance dropped due to **inefficient vector utilization (unaligned/tail elements)**, lowering SIMD efficiency and reducing speedup.  
 
-</details>
+<!-- </details>
 
 <details open>
 
-<summary>7. Summary & Conclusion</summary>
+<summary>7. Summary & Conclusion</summary> -->
+# 7. Summary & Conclusion
 
 ### 7.1 Software Prefetch (SW)
 - **Effective when PD ≈ 8**, reduces memory stall cycles if tuned correctly.  

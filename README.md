@@ -1,5 +1,116 @@
 # Matrix Multiplication & Embedding Optimization
 
+## Course Information
+- **Course:** CS683: Advanced Computer Architecture  
+- **Instructor:** Prof. Biswabandan Panda  
+- **Semester:** Aug 2025 – Present  
+- **Team Members:**  
+  - Aritra Belel [24M0814]  
+  - Sougata Sarkar [24M0790]  
+  - Hariom Mewada [24M2137]  
+- **Team Name:** Latency Yoddhas  
+
+---
+
+## Introduction
+This project focuses on optimizing computationally intensive operations commonly used in neural networks: **matrix multiplication** and **embedding lookups**.  
+
+**Optimizations applied:** loop unrolling, loop reordering, tiling, SIMD vectorization (SSE , AVX), and software prefetching.  
+
+---
+# List of Tasks and Links
+
+## Task 1 (Matrix Multiplication)
+
+| Task | Description / Optimization | Code Link | Report Link |
+|------|---------------------------|-----------|-------------|
+| 1A : Unroll Baba Unroll | Matrix Multiplication: Loop Reordering + Unroll | [mat_mul.c](PA1/Task1/mat_mul.c) | [README.md](PA1/Task1/README.md) |
+| 1B : Divide Karo, Rule Karo | Matrix Multiplication: Tiling | [mat_mul.c](PA1/Task1/mat_mul.c) | [README.md](PA1/Task1/README.md) |
+| 1C : Data Ko Line Mein Lagao | Matrix Multiplication: SIMD | [mat_mul.c](PA1/Task1/mat_mul.c) | [README.md](PA1/Task1/README.md) |
+| 1D : Rancho’s Final Year Project| Matrix Multiplication: Unroll, Reorder, Tiling, SIMD, Tiling + SIMD | [mat_mul.c](PA1/Task1/mat_mul.c) | [README.md](PA1/Task1/README.md) |
+| 1E : Confusion hi confusion hai !! | Matrix Transpose: Reorder, Unroll, Tiling, SIMD | [matrix_operation.c](PA1/neural_net/src/matrix_operation.c) | [README.md](PA1/neural_net/README.md) |
+
+## Task 2 (Embedding Operation)
+
+| Task | Description / Optimization | Code Link | Report Link |
+|------|---------------------------|-----------|-------------|
+| 2A : Software prefetching | Embedding Operation: Software Prefetching | [emb.cpp](PA1/Task2/emb.cpp) | [README.md](PA1/Task2/README.md) |
+| 2B  : SIMD| Embedding Operation: SIMD | [emb.cpp](PA1/Task2/emb.cpp) | [README.md](PA1/Task2/README.md) |
+| 2C : Software prefetching + SIMD| Embedding Operation: Software Prefetching + SIMD | [emb.cpp](PA1/Task2/emb.cpp) | [README.md](PA1/Task2/README.md) |
+
+---
+
+# Task 1: Matrix Multiplication Optimization
+
+## System Architecture
+- **Architecture:** x86_64 (64-bit)  
+- **Byte Order:** Little Endian  
+
+## CPU Details
+- **CPU Model:** Intel 12th Gen Core i5-1235U  
+- **Cores / Threads:** 10 cores, 12 threads (2 per core)  
+- **Max Frequency:** 4.40 GHz  
+- **Min Frequency:** 0.40 GHz  
+
+## Operating System
+- **OS:** Ubuntu 22.04 LTS  
+- **Perf Tool Version:** perf 6.8.12  
+
+### Cache Hierarchy
+
+| Cache Level | Per-Core / Instance Size | Number of Instances | Total Size (sum of all) | Notes |
+|------------|-------------------------|------------------|------------------------|-------|
+| L1 Data    | 32 KiB                  | 10               | 352 KiB                | Private per core |
+| L1 Instruction | 64 KiB               | 10               | 576 KiB                | Private per core |
+| L2         | 1.625 MiB               | 4                | 6.5 MiB                | Shared per cluster |
+| L3         | 12 MiB                  | 1                | 12 MiB                 | Shared across cores |
+
+
+---
+
+# Task 2: Embedding Optimization
+
+## System Architecture
+- **Architecture:** x86_64 (64-bit)  
+- **Byte Order:** Little Endian  
+
+## CPU Details
+- **CPU Model:** Intel 12th Gen Core i5-12400  
+- **Cores / Threads:** 6 cores, 12 threads (2 per core)  
+- **Max Frequency:** 4.40 GHz  
+- **Min Frequency:** 0.80 GHz  
+
+## Operating System
+- **OS:** Ubuntu 22.04.03 LTS  
+
+## Cache Hierarchy & Sizes
+| Cache Level | Per-Core / Instance Size | Number of Instances | Total Size (sum of all) | Notes |
+|------------|-------------------------|------------------|------------------------|-------|
+| L1 Data    | 48 KiB                  | 6                | 288 KiB                | Private per core |
+| L1 Instruction | 32 KiB               | 6                | 192 KiB                | Private per core |
+| L2         | 1.25 MiB                | 6                | 7.5 MiB                | Private per core |
+| L3         | 18 MiB                  | 1                | 18 MiB                 | Shared across cores |
+ 
+
+
+---
+### Additional Details
+
+- **Cache Line Size (CL):** 64 Bytes → 16 floats (4B each) per line  
+- **Approximate Latencies:**  
+  - L1 Data: 2 cycles  
+  - L2: 12 cycles  
+  - L3: 30 cycles  
+  - DRAM: 200 cycles  
+
+- **Embedding Row Example:**  
+  - Embedding dimension = 128 floats → 512 Bytes → 8 cache lines per row  
+
+- **MSHRs:** ~10–32 per core 
+
+---
+# Concepts & Terminology:
+
 ## Row-major order (C/C++ default)
 
 A 2D array `A[m][n]` is stored as:
@@ -24,7 +135,7 @@ If the program next accesses `A[i][j+1]`, it’s already in cache (**spatial loc
 
 ---
 
-# 2. Temporal vs Spatial Locality
+# Temporal vs Spatial Locality
 
 - **Spatial Locality** → Nearby addresses are used together.  
   - Example: Traversing an array row-by-row.  
@@ -41,7 +152,7 @@ Optimizations either exploit:
 
 ---
 
-# 3. Loop Reordering (Improving Spatial Locality)
+#  Loop Reordering (Improving Spatial Locality)
 
 ### Naïve order (i–j–k):
 
@@ -91,7 +202,7 @@ It also reduces **conflict misses** (when two arrays map to the same cache sets)
 
 ---
 
-# 4. Loop Unrolling (Instruction-Level Parallelism)
+# Loop Unrolling (Instruction-Level Parallelism)
 
 ### Example: Dot Product
 
@@ -131,7 +242,7 @@ sum = sum0 + sum1 + sum2 + sum3;
 
 ---
 
-# 5. Loop Tiling / Blocking (Improving Temporal Locality)
+# Loop Tiling / Blocking (Improving Temporal Locality)
 
 Large matrices don’t fit in cache. Without tiling, reused values get evicted before reuse.  
 
@@ -172,7 +283,7 @@ for (ii=0; ii<N; ii+=T)
 
 ---
 
-# 6. SIMD (Vectorization, Data-Level Parallelism)
+# SIMD (Vectorization, Data-Level Parallelism)
 
 ### Scalar vs SIMD
 
@@ -209,7 +320,7 @@ for (i=0; i<N; i+=4) {
 
 ---
 
-# 7. Software Prefetching (Hiding Memory Latency)
+# Software Prefetching (Hiding Memory Latency)
 
 ### Idea:
 - Bring cache lines into L1/L2/L3 *before* they are needed.  
@@ -249,7 +360,7 @@ for (int i=0; i<N; i++) {
 
 ---
 
-# 8. Types of Cache Misses
+# Types of Cache Misses
 
 - **Compulsory miss:** first-time access.  
 - **Capacity miss:** working set > cache size.  
@@ -263,7 +374,7 @@ for (int i=0; i<N; i++) {
 
 ---
 
-# ✅ Final Takeaways
+# Final Takeaways
 
 - **Loop Reordering** → improves **spatial locality**.  
 - **Loop Unrolling** → improves **ILP**, uses superscalar execution.  
