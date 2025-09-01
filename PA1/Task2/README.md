@@ -476,12 +476,44 @@ sudo modprobe msr
   - Prefetching into L2/LLC outperforms L1 due to higher capacity and better residency for 128-dim embeddings.  
 
 
+## Software Prefetching Comparison with HW Prefetch
+
+> **Note:** This run is not the same as the previous one.
+
+### Execution Time & Speedup Comparison
+
+| Embedding Table Size | Time w/o SW Prefetch (HW Off) | Time w/ SW Prefetch (HW Off) | Speedup (HW Off) | Time w/o SW Prefetch (HW On) | Time w/ SW Prefetch (HW On) | Speedup (HW On) |
+|---------------------|-------------------------------|------------------------------|-----------------|------------------------------|-----------------------------|----------------|
+| 30,000              | 220 µs                        | 196 µs                       | 1.12×           | 199 µs                       | 186 µs                      | 1.07×          |
+| 100,000             | 263 µs                        | 226 µs                       | 1.16×           | 257 µs                       | 216 µs                      | 1.19×          |
+| 1,000,000           | 326 µs                        | 237 µs                       | 1.38×           | 291 µs                       | 249 µs                      | 1.17×          |
+| 2,000,000           | 322 µs                        | 237 µs                       | 1.36×           | 284 µs                       | 214 µs                      | 1.33×          |
+
+---
+
+### Observations
+
+
+**HW Prefetch Interaction:**
+- With **hardware prefetch off**, software prefetch provides slightly higher speedup for very large tables (e.g., 1M embeddings: 1.38×).  
+- With **hardware prefetch on**, software prefetch still improves performance, but the incremental benefit over HW prefetch alone is smaller.  
+
+**Trade-off Between SW and HW Prefetch:**
+- SW prefetch allows finer control over prefetch distance and timing.  
+- HW prefetch automatically prefetches sequential data, which may overlap or reduce SW prefetch effectiveness.  
+
+**Conclusion:**
+- Software prefetching provides **measurable speedup**, especially for large embedding tables.  
+- Combining SW prefetch with HW prefetch requires careful tuning; SW prefetch alone can sometimes outperform when HW prefetch is disabled.
+
 <!-- </details>
 
 
 <details open>
 
 <summary>5. Task 2B – SIMD</summary> -->
+
+
 # 5. Task 2B – SIMD
 
 ### 5.1 Experimental Setup
